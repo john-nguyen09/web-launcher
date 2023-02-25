@@ -1,0 +1,7 @@
+@import "../styles/abstracts/variables.scss";
+
+.web-launcher-intercepted {
+  .title-card:focus {
+    outline: 2px solid rgba($white, 0.7);
+  }
+}

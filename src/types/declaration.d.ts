@@ -11,3 +11,8 @@ declare module "*.svg" {
 }
 
 declare const api: typeof import("../api").default;
+
+declare module "!raw-loader*" {
+  const content: string;
+  export default content;
+}
