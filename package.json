@@ -1,56 +1,42 @@
 {
   "name": "web-launcher",
-  "productName": "web-launcher",
   "version": "1.0.0",
-  "description": "My Electron application description",
-  "main": ".webpack/main",
-  "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
-  },
-  "keywords": [],
-  "author": {
-    "name": "John Nguyen",
-    "email": "john.nguyen09@outlook.com"
-  },
+  "main": "dist-electron/main.js",
+  "description": "A web launcher for streaming service with tweaks to work with TV remote",
+  "author": "John Nguyen <john.nguyen09@outlook.com>",
   "license": "MIT",
+  "debug": {
+    "env": {
+      "VITE_DEV_SERVER_URL": "http://127.0.0.1:7777/"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && electron-builder",
+    "preview": "vite preview",
+    "pree2e": "vite build --mode=test",
+    "e2e": "playwright test"
+  },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.5",
-    "@electron-forge/maker-deb": "^6.0.5",
-    "@electron-forge/maker-rpm": "^6.0.5",
-    "@electron-forge/maker-squirrel": "^6.0.5",
-    "@electron-forge/maker-zip": "^6.0.5",
-    "@electron-forge/plugin-webpack": "^6.0.5",
+    "@playwright/test": "^1.31.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "@typescript-eslint/eslint-plugin": "^5.53.0",
-    "@typescript-eslint/parser": "^5.53.0",
-    "@vercel/webpack-asset-relocator-loader": "^1.7.3",
-    "classnames": "^2.3.2",
-    "css-loader": "^6.7.3",
-    "electron": "github:castlabs/electron-releases#v23.1.1+wvcus",
-    "eslint": "^8.34.0",
-    "eslint-plugin-import": "^2.27.5",
-    "fork-ts-checker-webpack-plugin": "^7.3.0",
-    "node-loader": "^2.0.0",
-    "raw-loader": "^4.0.2",
-    "react-svg-loader": "^3.0.3",
-    "sass": "^1.58.3",
-    "sass-loader": "^13.2.0",
-    "style-loader": "^3.3.1",
-    "ts-loader": "^9.4.2",
-    "ts-node": "^10.9.1",
-    "typescript": "~4.5.4"
-  },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.0",
+    "@vitejs/plugin-react": "^3.1.0",
+    "electron": "^23.1.1",
+    "electron-builder": "^23.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.8.1",
     "react-router-dom": "^6.8.1",
-    "web-vitals": "^3.1.1"
+    "sass": "^1.58.3",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.4",
+    "vite-electron-plugin": "^0.8.2",
+    "vite-plugin-electron": "^0.11.1",
+    "vite-plugin-electron-renderer": "^0.12.1",
+    "vite-plugin-svgr": "^2.4.0"
+  },
+  "engines": {
+    "node": "^14.18.0 || >=16.0.0"
   }
 }

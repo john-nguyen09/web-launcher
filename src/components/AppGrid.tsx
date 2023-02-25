@@ -1,5 +1,5 @@
 import styles from "../styles/AppGrid.module.scss";
-import NetflixLogo from "../assets/images/netflix-logo.inline.svg";
+import { ReactComponent as NetflixLogo } from "../assets/images/netflix-logo.inline.svg";
 import { Link } from "react-router-dom";
 
 export default function AppGrid() {

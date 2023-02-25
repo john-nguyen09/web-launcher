@@ -6,13 +6,7 @@ declare module "*.module.scss" {
 declare module "*.scss";
 
 declare module "*.svg" {
-  const content: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
-  export default content;
+  export const ReactComponent: React.FunctionComponent<React.SVGAttributes<SVGElement>>;
 }
 
-declare const api: typeof import("../api").default;
-
-declare module "!raw-loader*" {
-  const content: string;
-  export default content;
-}
+declare const api: typeof import("../../common/api").default;
