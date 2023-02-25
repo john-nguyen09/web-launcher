@@ -1,0 +1,15 @@
+@import "./abstracts/variables.scss";
+
+.root {
+  height: 100%;
+  background: $dark-grey;
+  color: $white;
+  position: relative;
+}
+
+.navBarWrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

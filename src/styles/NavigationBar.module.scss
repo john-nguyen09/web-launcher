@@ -1,0 +1,12 @@
+@import "./abstracts/variables.scss";
+
+.root {
+  height: 12px;
+  background: rgba($white, 0.1);
+  transition: height 0.3s ease-in-out;
+
+  &:hover {
+    height: 120px;
+    background: rgba($white, 0.15);
+  }
+}
