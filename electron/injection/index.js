@@ -48,9 +48,7 @@ function setFocusTrapNavigation() {
 function watchForFocusTrap() {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-      console.log(mutation);
       mutation.addedNodes.forEach((node) => {
-        console.log(node);
         if (node.nodeType == 1 && node.matches(".focus-trap-wrapper")) {
           setFocusTrapNavigation();
         }

@@ -3,15 +3,12 @@ import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import electron from "vite-plugin-electron";
-import renderer from "vite-plugin-electron-renderer";
 import svgr from "vite-plugin-svgr";
 import pkg from "./package.json";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
   rmSync("dist-electron", { recursive: true, force: true });
-
-  const sourcemap = command === "serve" || !!process.env.VSCODE_DEBUG;
 
   return {
     resolve: {
@@ -21,6 +18,7 @@ export default defineConfig(({ command }) => {
     },
     plugins: [
       react(),
+      svgr(),
       electron([
         {
           // Main-Process entry file of the Electron App.
@@ -35,11 +33,6 @@ export default defineConfig(({ command }) => {
           },
         },
       ]),
-      // Use Node.js API in the Renderer-process
-      renderer({
-        nodeIntegration: true,
-      }),
-      svgr(),
     ],
     server: !!process.env.VSCODE_DEBUG
       ? (() => {

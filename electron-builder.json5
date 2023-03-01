@@ -2,8 +2,13 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-  "appId": "YourAppID",
+  "appId": "au.thuan.web-launcher",
   "asar": true,
+  "electronDownload": {
+    "mirror": "https://github.com/castlabs/electron-releases/releases/download/v"
+  },
+  "afterPack": "./build/afterPack.js",
+  "afterSign": "./build/afterSign.js",
   "directories": {
     "output": "release/${version}"
   },
