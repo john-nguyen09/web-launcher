@@ -31,3 +31,8 @@ body,
 a {
   color: $white;
 }
+
+#sn-debug,
+#sn-layouts {
+  pointer-events: none;
+}

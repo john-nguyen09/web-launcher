@@ -1,14 +1,23 @@
 import { rmSync } from "node:fs";
 import path from "node:path";
-import { defineConfig } from "vite";
+
 import react from "@vitejs/plugin-react";
+import { build } from "esbuild";
+import { defineConfig } from "vite";
 import electron from "vite-plugin-electron";
 import svgr from "vite-plugin-svgr";
+
 import pkg from "./package.json";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
+export default defineConfig(async ({ command }) => {
   rmSync("dist-electron", { recursive: true, force: true });
+
+  const code = await build({
+    entryPoints: ["./src/lib/injection/netflix.inline.js"],
+    bundle: true,
+    outfile: "./src/lib/injection/netflix.js",
+  });
 
   return {
     resolve: {
@@ -34,7 +43,7 @@ export default defineConfig(({ command }) => {
         },
       ]),
     ],
-    server: !!process.env.VSCODE_DEBUG
+    server: process.env.VSCODE_DEBUG
       ? (() => {
           const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL);
           return {

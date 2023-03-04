@@ -1,4 +1,5 @@
 import { contextBridge } from "electron";
+
 import api from "../common/api";
 
 function domReady(condition: DocumentReadyState[] = ["complete", "interactive"]) {

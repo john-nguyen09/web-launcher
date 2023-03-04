@@ -11,7 +11,11 @@ interface Props {
 }
 
 export default function AppTile({ to, children }: PropsWithChildren<Props>) {
-  const { ref, focused } = useFocusable();
+  const { ref, focused } = useFocusable({
+    onEnterPress() {
+      ref.current && ref.current.click();
+    },
+  });
 
   return (
     <Link

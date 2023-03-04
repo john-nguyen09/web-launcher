@@ -1,16 +1,15 @@
-import {
-  app,
-  BrowserWindow,
-  shell,
-  ipcMain,
-  screen,
-  BrowserView,
-  components,
-} from "electron";
 import { release } from "node:os";
 import { join } from "node:path";
-import injectionJS from "./injection/index.js?raw";
-import injectionCSS from "./injection/index.scss?inline";
+
+import {
+  app,
+  BrowserView,
+  BrowserWindow,
+  components,
+  ipcMain,
+  screen,
+  shell,
+} from "electron";
 
 // The built directory structure
 //
@@ -90,7 +89,7 @@ async function createWindow() {
   win.addBrowserView(view);
   view.setBounds({ x: 0, y: height, width: 0, height: 0 });
 
-  ipcMain.on("launch:web", (e, url) => {
+  ipcMain.on("launch:web", (e, url, { injectionJS, injectionCSS }) => {
     view.setBounds({
       x: 0,
       y: 0,
@@ -103,8 +102,12 @@ async function createWindow() {
 
     contents.openDevTools();
     contents.on("did-finish-load", () => {
-      contents.insertCSS(injectionCSS);
-      contents.executeJavaScript(injectionJS);
+      if (injectionCSS) {
+        contents.insertCSS(injectionCSS);
+      }
+      if (injectionJS) {
+        contents.executeJavaScript(injectionJS);
+      }
     });
   });
 

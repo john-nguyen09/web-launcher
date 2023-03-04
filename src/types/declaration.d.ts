@@ -10,3 +10,13 @@ declare module "*.svg" {
 }
 
 declare const api: typeof import("../../common/api").default;
+
+declare module "spatial-navigation-js" {
+  export default any;
+}
+
+interface Window {
+  SpatialNavigation: any;
+}
+
+window.SpatialNavigation = window.SpatialNavigation || {};

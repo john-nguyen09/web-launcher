@@ -1,13 +1,12 @@
-import { useEffect } from "react";
+import injectionCSS from "@/lib/injection/netflix.scss?inline";
+import injectionJS from "@/lib/injection/netflix?raw";
+import useLaunchWeb from "@/lib/useLaunchWeb";
 
 export default function Netflix() {
-  useEffect(() => {
-    api.launchWeb("https://netflix.com");
-
-    return () => {
-      api.closeWeb();
-    };
-  }, []);
+  useLaunchWeb("https://netflix.com", {
+    injectionCSS,
+    injectionJS,
+  });
 
   return <></>;
 }

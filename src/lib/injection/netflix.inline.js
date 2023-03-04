@@ -1,7 +1,8 @@
-import(
-  // eslint-disable-next-line import/no-unresolved
-  "https://luke-chang.github.io/js-spatial-navigation/spatial_navigation.js"
-).then(() => {
+import "spatial-navigation-js";
+
+init();
+
+function init() {
   const { SpatialNavigation } = window;
 
   if (typeof SpatialNavigation === "undefined") {
@@ -15,7 +16,7 @@ import(
   setMainScreenNavigation();
 
   watchForFocusTrap();
-});
+}
 
 function setMainScreenNavigation() {
   const { SpatialNavigation } = window;
@@ -45,16 +46,20 @@ function setFocusTrapNavigation() {
   SpatialNavigation.focus();
 }
 
+function isElement(node) {
+  return node.nodeType === 1;
+}
+
 function watchForFocusTrap() {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((node) => {
-        if (node.nodeType == 1 && node.matches(".focus-trap-wrapper")) {
+        if (isElement(node) && node.matches(".focus-trap-wrapper")) {
           setFocusTrapNavigation();
         }
       });
       mutation.removedNodes.forEach((node) => {
-        if (node.nodeType == 1 && node.matches(".focus-trap-wrapper")) {
+        if (isElement(node) && node.matches(".focus-trap-wrapper")) {
           setMainScreenNavigation();
         }
       });
