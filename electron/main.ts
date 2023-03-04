@@ -63,6 +63,7 @@ async function createWindow() {
     height,
     fullscreen: true,
     kiosk: true,
+    frame: false,
   });
 
   if (process.env.VITE_DEV_SERVER_URL) {

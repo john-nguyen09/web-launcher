@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+
 import styles from "../styles/Layout.module.scss";
 import NavigationBar from "./NavigationBar";
 
