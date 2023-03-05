@@ -13,8 +13,8 @@ import pkg from "./package.json";
 export default defineConfig(async ({ command }) => {
   rmSync("dist-electron", { recursive: true, force: true });
 
-  const code = await build({
-    entryPoints: ["./src/lib/injection/netflix.inline.js"],
+  await build({
+    entryPoints: ["./src/lib/injection/netflix.inline.ts"],
     bundle: true,
     outfile: "./src/lib/injection/netflix.js",
   });

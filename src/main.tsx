@@ -8,11 +8,16 @@ import { createMemoryRouter, RouteObject, RouterProvider } from "react-router";
 import AppGrid from "./components/AppGrid";
 import Layout from "./components/Layout";
 import Netflix from "./components/Netflix";
+import Youtube from "./components/Youtube";
 
 const routes: RouteObject[] = [
   {
     path: "/netflix",
     element: <Netflix />,
+  },
+  {
+    path: "/youtube",
+    element: <Youtube />,
   },
   {
     path: "/",
@@ -27,12 +32,14 @@ init({
   visualDebug: false,
 });
 
+api.onBackToHome(() => {
+  router.navigate("/");
+});
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <Layout>
-      <RouterProvider router={router} />
-    </Layout>
-  </React.StrictMode>,
+  <Layout>
+    <RouterProvider router={router} />
+  </Layout>,
 );
 
 postMessage({ payload: "removeLoading" }, "*");

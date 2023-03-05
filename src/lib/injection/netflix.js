@@ -26,9 +26,10 @@
     mod
   ));
 
-  // node_modules/spatial-navigation-js/spatial_navigation.js
+  // src/lib/injection/spatial_navigation.js
   var require_spatial_navigation = __commonJS({
-    "node_modules/spatial-navigation-js/spatial_navigation.js"(exports, module) {
+    "src/lib/injection/spatial_navigation.js"(exports, module) {
+      "use strict";
       (function($) {
         "use strict";
         var GlobalConfig = {
@@ -51,16 +52,16 @@
           navigableFilter: null
         };
         var KEYMAPPING = {
-          "37": "left",
-          "38": "up",
-          "39": "right",
-          "40": "down"
+          37: "left",
+          38: "up",
+          39: "right",
+          40: "down"
         };
         var REVERSE = {
-          "left": "right",
-          "up": "down",
-          "right": "left",
-          "down": "up"
+          left: "right",
+          up: "down",
+          right: "left",
+          down: "up"
         };
         var EVENT_PREFIX = "sn:";
         var ID_POOL_PREFIX = "section-";
@@ -246,11 +247,7 @@
             return null;
           }
           var distanceFunction = generateDistanceFunction(targetRect);
-          var groups = partition(
-            rects,
-            targetRect,
-            config.straightOverlapThreshold
-          );
+          var groups = partition(rects, targetRect, config.straightOverlapThreshold);
           var internalGroups = partition(
             groups[4],
             targetRect.center,
@@ -397,17 +394,21 @@
           return id;
         }
         function parseSelector(selector) {
-          var result;
-          if ($) {
-            result = $(selector).get();
-          } else if (typeof selector === "string") {
-            result = [].slice.call(document.querySelectorAll(selector));
-          } else if (typeof selector === "object" && selector.length) {
-            result = [].slice.call(selector);
-          } else if (typeof selector === "object" && selector.nodeType === 1) {
-            result = [selector];
-          } else {
-            result = [];
+          var result = [];
+          try {
+            if (selector) {
+              if ($) {
+                result = $(selector).get();
+              } else if (typeof selector === "string") {
+                result = [].slice.call(document.querySelectorAll(selector));
+              } else if (typeof selector === "object" && selector.length) {
+                result = [].slice.call(selector);
+              } else if (typeof selector === "object" && selector.nodeType === 1) {
+                result = [selector];
+              }
+            }
+          } catch (err) {
+            console.error(err);
           }
           return result;
         }
@@ -489,19 +490,15 @@
           });
         }
         function getSectionDefaultElement(sectionId) {
-          var defaultElement = _sections[sectionId].defaultElement;
+          var defaultElement = parseSelector(_sections[sectionId].defaultElement).find(
+            function(elem) {
+              return isNavigable(elem, sectionId, true);
+            }
+          );
           if (!defaultElement) {
             return null;
           }
-          if (typeof defaultElement === "string") {
-            defaultElement = parseSelector(defaultElement)[0];
-          } else if ($ && defaultElement instanceof $) {
-            defaultElement = defaultElement.get(0);
-          }
-          if (isNavigable(defaultElement, sectionId, true)) {
-            return defaultElement;
-          }
-          return null;
+          return defaultElement;
         }
         function getSectionLastFocusedElement(sectionId) {
           var lastFocusedElement = _sections[sectionId].lastFocusedElement;
@@ -627,9 +624,14 @@
           return false;
         }
         function fireNavigatefailed(elem, direction) {
-          fireEvent(elem, "navigatefailed", {
-            direction
-          }, false);
+          fireEvent(
+            elem,
+            "navigatefailed",
+            {
+              direction
+            },
+            false
+          );
         }
         function gotoLeaveFor(sectionId, direction) {
           if (_sections[sectionId].leaveFor && _sections[sectionId].leaveFor[direction] !== void 0) {
@@ -652,6 +654,7 @@
         }
         function focusNext(direction, currentFocusedElement, currentSectionId) {
           var extSelector = currentFocusedElement.getAttribute("data-sn-" + direction);
+          console.trace({ currentFocusedElement, extSelector });
           if (typeof extSelector === "string") {
             if (extSelector === "" || !focusExtendedSelector(extSelector, direction)) {
               fireNavigatefailed(currentFocusedElement, direction);
@@ -830,6 +833,7 @@
         var SpatialNavigation = {
           init: function() {
             if (!_ready) {
+              console.log("init");
               window.addEventListener("keydown", onKeyDown);
               window.addEventListener("keyup", onKeyUp);
               window.addEventListener("focus", onFocus, true);
@@ -1047,7 +1051,10 @@
               if ($.isPlainObject(arguments[0])) {
                 return SpatialNavigation.add(arguments[0]);
               } else if ($.type(arguments[0]) === "string" && $.isFunction(SpatialNavigation[arguments[0]])) {
-                return SpatialNavigation[arguments[0]].apply(SpatialNavigation, [].slice.call(arguments, 1));
+                return SpatialNavigation[arguments[0]].apply(
+                  SpatialNavigation,
+                  [].slice.call(arguments, 1)
+                );
               }
             }
             return $.extend({}, SpatialNavigation);
@@ -1075,9 +1082,12 @@
     }
   });
 
-  // src/lib/injection/netflix.inline.js
-  var import_spatial_navigation_js = __toESM(require_spatial_navigation());
-  init();
+  // src/lib/injection/netflix.inline.ts
+  var import_spatial_navigation = __toESM(require_spatial_navigation());
+  var INTERCEPTED_CLASS_NAME = "web-launcher-intercepted";
+  if (!document.body.classList.contains(INTERCEPTED_CLASS_NAME)) {
+    init();
+  }
   function init() {
     const { SpatialNavigation } = window;
     if (typeof SpatialNavigation === "undefined") {
@@ -1092,13 +1102,11 @@
   function setMainScreenNavigation() {
     const { SpatialNavigation } = window;
     SpatialNavigation.clear();
-    SpatialNavigation.add({
-      selector: [
-        '.title-card a[role="link"]',
-        'button[type="button"]',
-        ".profile-link"
-      ].join(", ")
-    });
+    ['.title-card a[role="link"]', 'button[type="button"]', ".profile-link"].forEach(
+      (selector) => {
+        SpatialNavigation.add({ selector, straightOverlapThreshold: 0.1 });
+      }
+    );
     SpatialNavigation.makeFocusable();
     SpatialNavigation.focus();
   }

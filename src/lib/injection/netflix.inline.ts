@@ -1,6 +1,10 @@
-import "spatial-navigation-js";
+import "./spatial_navigation.js";
 
-init();
+const INTERCEPTED_CLASS_NAME = "web-launcher-intercepted";
+
+if (!document.body.classList.contains(INTERCEPTED_CLASS_NAME)) {
+  init();
+}
 
 function init() {
   const { SpatialNavigation } = window;
@@ -21,13 +25,11 @@ function init() {
 function setMainScreenNavigation() {
   const { SpatialNavigation } = window;
   SpatialNavigation.clear();
-  SpatialNavigation.add({
-    selector: [
-      '.title-card a[role="link"]',
-      'button[type="button"]',
-      ".profile-link",
-    ].join(", "),
-  });
+  ['.title-card a[role="link"]', 'button[type="button"]', ".profile-link"].forEach(
+    (selector) => {
+      SpatialNavigation.add({ selector, straightOverlapThreshold: 0.1 });
+    },
+  );
   SpatialNavigation.makeFocusable();
   SpatialNavigation.focus();
 }
@@ -46,7 +48,7 @@ function setFocusTrapNavigation() {
   SpatialNavigation.focus();
 }
 
-function isElement(node) {
+function isElement(node: Node): node is Element {
   return node.nodeType === 1;
 }
 

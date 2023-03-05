@@ -21,7 +21,7 @@ export default function AppGrid() {
             <NetflixLogo />
           </AppTile>
 
-          <AppTile to="/">
+          <AppTile to="/youtube">
             <YoutubeLogo className={styles.youtube} />
           </AppTile>
         </div>

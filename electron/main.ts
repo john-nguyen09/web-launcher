@@ -11,6 +11,9 @@ import {
   shell,
 } from "electron";
 
+import initMenu from "./menu";
+import { init, listenForInput } from "./utils";
+
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -46,7 +49,6 @@ let win: BrowserWindow | null = null;
 const preload = join(__dirname, "./preload.js");
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, "index.html");
-console.log(process.env.DIST);
 
 async function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -65,11 +67,12 @@ async function createWindow() {
     frame: false,
   });
 
+  init({ mainWin: win });
+  initMenu();
+
   if (process.env.VITE_DEV_SERVER_URL) {
     // electron-vite-vue#298
     win.loadURL(url);
-    // Open devTool if the app is not packaged
-    win.webContents.openDevTools();
   } else {
     win.loadFile(indexHtml);
   }
@@ -89,31 +92,54 @@ async function createWindow() {
   win.addBrowserView(view);
   view.setBounds({ x: 0, y: height, width: 0, height: 0 });
 
-  ipcMain.on("launch:web", (e, url, { injectionJS, injectionCSS }) => {
+  listenForInput(view.webContents);
+
+  let unsubsribers: (() => void)[] = [];
+
+  ipcMain.on("launch:web", (e, url, { injectionJS, injectionCSS, userAgent }) => {
     view.setBounds({
       x: 0,
       y: 0,
       width,
       height: height,
     });
+    if (userAgent) {
+      view.webContents.setUserAgent(userAgent);
+    }
     view.webContents.loadURL(url);
 
     const { webContents: contents } = view;
-
-    contents.openDevTools();
-    contents.on("did-finish-load", () => {
+    const onLoad = async () => {
       if (injectionCSS) {
-        contents.insertCSS(injectionCSS);
+        const key = await contents.insertCSS(injectionCSS);
+        unsubsribers.push(async () => {
+          await contents.removeInsertedCSS(key);
+        });
       }
       if (injectionJS) {
         contents.executeJavaScript(injectionJS);
       }
+    };
+
+    contents.focus();
+    contents.openDevTools();
+    contents.on("did-finish-load", onLoad);
+    unsubsribers.push(() => {
+      contents.off("did-finish-load", onLoad);
     });
   });
 
   ipcMain.on("close:web", () => {
     view.setBounds({ x: 0, y: height, width: 0, height: 0 });
-    view.webContents.loadURL("");
+    view.webContents.loadURL("about:blank");
+    win.webContents.focus();
+    Promise.all(unsubsribers.map((unsubscribe) => unsubscribe())).then(
+      () => (unsubsribers = []),
+    );
+  });
+
+  ipcMain.on("log:message", (e, message) => {
+    console.log(message);
   });
 }
 
