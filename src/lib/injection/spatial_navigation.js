@@ -748,7 +748,6 @@
 
   function focusNext(direction, currentFocusedElement, currentSectionId) {
     var extSelector = currentFocusedElement.getAttribute("data-sn-" + direction);
-    console.trace({ currentFocusedElement, extSelector });
     if (typeof extSelector === "string") {
       if (extSelector === "" || !focusExtendedSelector(extSelector, direction)) {
         fireNavigatefailed(currentFocusedElement, direction);
@@ -977,7 +976,6 @@
   var SpatialNavigation = {
     init: function () {
       if (!_ready) {
-        console.log("init");
         window.addEventListener("keydown", onKeyDown);
         window.addEventListener("keyup", onKeyUp);
         window.addEventListener("focus", onFocus, true);

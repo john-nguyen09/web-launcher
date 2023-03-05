@@ -25,11 +25,13 @@ function init() {
 function setMainScreenNavigation() {
   const { SpatialNavigation } = window;
   SpatialNavigation.clear();
-  ['.title-card a[role="link"]', 'button[type="button"]', ".profile-link"].forEach(
-    (selector) => {
-      SpatialNavigation.add({ selector, straightOverlapThreshold: 0.1 });
-    },
-  );
+  [
+    '.title-card a[role="link"], .handle[role="button"]',
+    'button[type="button"]',
+    ".profile-link",
+  ].forEach((selector) => {
+    SpatialNavigation.add({ selector, straightOverlapThreshold: 0.1 });
+  });
   SpatialNavigation.makeFocusable();
   SpatialNavigation.focus();
 }
