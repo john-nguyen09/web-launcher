@@ -122,7 +122,6 @@ async function createWindow() {
     };
 
     contents.focus();
-    contents.openDevTools();
     contents.on("did-finish-load", onLoad);
     unsubsribers.push(() => {
       contents.off("did-finish-load", onLoad);
